@@ -70,7 +70,27 @@ app.post('/createBrand', async (req, res) => {
 
 
 
+app.delete('/deleteBrand/:id', async (req, res) => {
+    const brandId = req.params.id;
 
+    try {
+        // Поиск бренда по идентификатору
+        const brandToDelete = await Brand.findByPk(brandId);
+
+        if (!brandToDelete) {
+            return res.status(404).json({ error: 'Brand not found' });
+        }
+
+        // Удаление бренда
+        await brandToDelete.destroy();
+
+        // Возвращаем успешный статус
+        res.status(200).json({ message: 'Brand deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting brand:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 app.get('/brands', async (req, res) => {
     try {

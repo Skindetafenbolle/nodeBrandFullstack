@@ -6,6 +6,7 @@
     <title>Бренды</title>
 </head>
 <body>
+    <a href="/createBrand">Добавить бренд</a>
     <h1>Список брендов</h1>
 
     {{#each brands}}
@@ -21,4 +22,26 @@
         </div>
     {{/each}}
 </body>
+
+<script>
+    async function deleteBrand(brandId) {
+        try {
+            const response = await fetch(`/deleteBrand/${brandId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                console.log('Brand deleted successfully');
+
+                // Обновляем страницу (можете также реализовать удаление элемента DOM)
+                window.location.reload();
+            } else {
+                const errorData = await response.json();
+                console.error('Error deleting brand:', errorData);
+            }
+        } catch (error) {
+            console.error('Error deleting brand:', error);
+        }
+    }
+</script>
 </html>
