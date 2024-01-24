@@ -1,15 +1,26 @@
+// Ваш app.js
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 const sequelize = require('./config/database');
 const Brand = require('./models/Brand');
+const path = require('path');
 
 const app = express();
 const PORT = 3000;
 
+app.use(express.json());
 app.use(bodyParser.json());
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
+
+app.engine('.handlebars', exphbs({
+    defaultLayout: 'main',
+    extname: '.handlebars',
+    layoutsDir: path.join(__dirname, 'views/layouts'),
+    cache: process.env.NODE_ENV === 'production' ? true : false,
+}));
+
+app.set('view engine', '.handlebars');
 
 sequelize.authenticate()
     .then(() => {
@@ -27,7 +38,15 @@ Brand.sync()
         console.error('Error synchronizing Brand model:', error);
     });
 
-app.post('/createBrands', async (req, res) => {
+app.get('/createBrand', (req, res) => {
+    console.log("Received GET request for /createBrand");
+    const templatePath = path.join(__dirname, 'views', 'createBrand');
+    res.render(templatePath, { layout: 'main' });
+});
+
+// Роут для обработки создания бренда
+app.post('/createBrand', async (req, res) => {
+    console.log('Received POST request for /createBrand');
     const { name, description, foundationDate, logoURL, socialLinks } = req.body;
 
     try {
@@ -39,12 +58,19 @@ app.post('/createBrands', async (req, res) => {
             socialLinks,
         });
 
-        res.status(201).json({ message: 'Brand created successfully', brand: newBrand });
+        console.log('New brand created:', newBrand);
+
+        res.status(201);
+
     } catch (error) {
         console.error('Error creating brand:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+
+
 
 app.get('/brands', async (req, res) => {
     try {
@@ -52,11 +78,10 @@ app.get('/brands', async (req, res) => {
         const plainBrands = brands.map(brand => brand.get({ plain: true }));
         res.render('brands', { brands: plainBrands });
     } catch (error) {
-        console.error('Ошибка при получении брендов:', error);
-        res.status(500).json({ error: 'Внутренняя ошибка сервера' });
+        console.error('Error fetching brands:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

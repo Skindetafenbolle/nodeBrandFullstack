@@ -1,0 +1,65 @@
+<!-- createBrand.handlebars -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать бренд</title>
+</head>
+<body>
+    <h1>Создать бренд</h1>
+    <form id="brandForm" action="/createBrand" method="POST">
+        <label for="name">Название бренда:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="description">Описание бренда:</label>
+        <textarea id="description" name="description"></textarea><br>
+
+        <label for="foundationDate">Дата основания:</label>
+        <input type="date" id="foundationDate" name="foundationDate" required><br>
+
+        <label for="logoURL">URL логотипа:</label>
+        <input type="text" id="logoURL" name="logoURL"><br>
+
+        <label for="socialLinks">Ссылки на социальные сети:</label>
+        <input type="text" id="socialLinks" name="socialLinks" placeholder="Разделяйте ссылки запятыми"><br>
+
+        <button type="submit">Создать бренд</button>
+    </form>
+
+    <script>
+        document.getElementById('brandForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = {
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value,
+                foundationDate: document.getElementById('foundationDate').value,
+                logoURL: document.getElementById('logoURL').value,
+                socialLinks: document.getElementById('socialLinks').value.split(',').map(link => link.trim()),
+            };
+
+                    window.location.href = '/brands';
+            try {
+                const response = await fetch('/createBrand', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Error creating brand:', errorData);
+                }
+            } catch (error) {
+                console.error('Error creating brand:', error);
+            }
+        });
+    </script>
+</body>
+</html>

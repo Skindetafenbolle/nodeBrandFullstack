@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бренды</title>
+</head>
+<body>
+    <h1>Список брендов</h1>
+
+    {{#each brands}}
+        <div class="brand-item">
+            <h2>{{name}}</h2>
+            <p>{{description}}</p>
+            <p>Дата основания: {{foundationDate}}</p>
+            <p>Логотип: <img src="{{logoURL}}" alt="{{name}} logo"></p>
+            <p>Ссылки на социальные сети: {{socialLinks}}</p>
+
+            <!-- Добавляем кнопку удаления -->
+            <button onclick="deleteBrand('{{id}}')">Удалить</button>
+        </div>
+    {{/each}}
+</body>
+</html>

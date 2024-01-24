@@ -6,20 +6,6 @@
     <title>Brands</title>
 </head>
 <body>
-    <h1>List of Brands</h1>
-    {{#each brands}}
-        <div>
-            <h2>{{this.name}}</h2>
-            <p>{{this.description}}</p>
-            <p>Foundation Date: {{this.foundationDate}}</p>
-            <img src="{{this.logoURL}}" alt="{{this.name}} Logo">
-            <ul>
-                {{#each this.socialLinks}}
-                    <li><a href="{{this}}" target="_blank">{{this}}</a></li>
-                {{/each}}
-            </ul>
-        </div>
-        <hr>
-    {{/each}}
+    {{{ body}}}
 </body>
 </html>
